@@ -51,8 +51,7 @@ str(voter_turnout_df1)
 ## Use the names "ward_precint", "ballots_cast", "registered_voters", "voter_turnout"
 ## Assign the data to the `voter_turnout_df2`
 ## Examine the structure of `voter_turnout_df2` using `str()`
-voter_turnout_df2 <- read_excel("data/G04ResultsDetail2004-11-02.xls", skip = 2, sheet = "Voter Turnout")
-colnames <-c ("ward_precint", "ballots_cast", "registered_voters", "voter_turnout")
+voter_turnout_df2 <- read_excel("data/G04ResultsDetail2004-11-02.xls", skip = 2, sheet = "Voter Turnout", col_names = c("ward_precint", "ballots_cast", "registered_voters", "voter_turnout"))
 str(voter_turnout_df2)
 
 ## Load the `DBI` library
@@ -68,7 +67,7 @@ db <- dbConnect(RSQLite::SQLite(), "data/tidynomicon/example.db")
 ## `SELECT * FROM PERSON;` SQL statement
 ## Assign the result to the `person_df` variable
 ## Use `head()` to look at the first few rows of the `person_df` dataframe
-person_df <- dbGetQuery ("SELECT * FROM PERSON", stringAsFactors = FALSE)
+person_df <- dbGetQuery ("SELECT * FROM PERSON")
 head(person_df)
 
 ## List the tables using the `dbListTables()` function
