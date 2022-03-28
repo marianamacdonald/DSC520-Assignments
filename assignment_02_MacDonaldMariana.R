@@ -42,7 +42,7 @@ excel_sheets("data/G04ResultsDetail2004-11-02.xls")
 ## The header is in the second row, so make sure to skip the first row
 ## Examine the structure of `voter_turnout_df1` using `str()`
 
-voter_turnout_df1 <- read_excel("data/G04ResultsDetail2004-11-02.xls", skip = 1)
+voter_turnout_df1 <- read_excel("data/G04ResultsDetail2004-11-02.xls", skip = 1, sheet = "Voter Turnout")
 str(voter_turnout_df1)
 
 ## Using the `read_excel()` function, read the Voter Turnout sheet
@@ -51,7 +51,7 @@ str(voter_turnout_df1)
 ## Use the names "ward_precint", "ballots_cast", "registered_voters", "voter_turnout"
 ## Assign the data to the `voter_turnout_df2`
 ## Examine the structure of `voter_turnout_df2` using `str()`
-voter_turnout_df2 <- read_excel("data/G04ResultsDetail2004-11-02.xls", skip = 2)
+voter_turnout_df2 <- read_excel("data/G04ResultsDetail2004-11-02.xls", skip = 2, sheet = "Voter Turnout")
 colnames <-c ("ward_precint", "ballots_cast", "registered_voters", "voter_turnout")
 str(voter_turnout_df2)
 
