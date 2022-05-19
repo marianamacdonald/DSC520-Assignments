@@ -1,0 +1,111 @@
+---
+title: "Assignment 1 - week 10"
+author: "Mariana MacDonald"
+date: '2022-05-22'
+output: pdf_document
+---
+
+### 1 a) For this problem, you will be working with the thoracic surgery data set from the University of California Irvine machine learning repository. This dataset contains information on life expectancy in lung cancer patients after surgery. The underlying thoracic surgery data is in ARFF format. This is a text-based format with information on each of the attributes. You can load this data using a package such as foreign or by cutting and pasting the data section into a CSV file.
+
+
+```{r}
+setwd("/Users/marianamacdonald/Documents/DATA SCIENCE/DSC 520/Statistics R/Week 2/dsc520")
+toracic <- read.csv ("csv_result-ThoraricSurgery.csv", stringsAsFactors = T)
+head(toracic)
+```
+
+### b i) Fit a binary logistic regression model to the data set that predicts whether or not the patient survived for one year (the Risk1Y variable) after the surgery. Use the glm() function to perform the logistic regression. See Generalized Linear Models for an example. Include a summary using the summary() function in your results.
+
+
+```{r}
+options(scipen=999)
+survival <- glm(Risk1Yr ~ DGN + PRE4 + PRE5 + PRE6 + PRE7+ PRE8 + PRE9 + PRE10 + PRE11 + PRE14 + PRE17 + PRE19 +
+                  PRE25 + PRE30 + PRE32 + AGE, data = toracic, family = binomial())
+summary(survival)
+```
+
+
+
+
+### ii) According to the summary, which variables had the greatest effect on the survival rate?
+
+Pr(>|z|) < .05 (If the coefficient is significantly different than zero, we can assume that the predictors are making a significant contribution to the prediction of the outcome.)
+z value far from zero (Z value - The further a value is from 0, the stronger its role as a predictor)
+
+The variables with these characteristics are the PRE9T, meaning patient had dyspnoea before surgery, PRE14OC14 (has the largest tumor), PRE17T (Type 2 DM - diabetes mellitus) and PRE30T (smoker).
+
+
+
+### iii) To compute the accuracy of your model, use the dataset to predict the outcome variable. The percent of correct predictions is the accuracy of your model. What is the accuracy of your model?
+
+
+```{r}
+library(caTools)
+
+#split the data
+split <- sample.split(toracic, SplitRatio = 0.8)
+split
+
+#train model
+train <- subset(toracic, split == "TRUE")
+test <- subset(toracic, split == "FALSE")
+
+mymodel <- glm(Risk1Yr ~ DGN + PRE4 + PRE5 + PRE6 + PRE7+ PRE8 + PRE9 + PRE10 + PRE11 + PRE14 + PRE17 + PRE19 +
+                  PRE25 + PRE30 + PRE32 + AGE, data = train, family = binomial())
+summary(mymodel)
+
+# Run test data through the model built on training data
+response <- predict(mymodel, test, type = "response")
+response
+response2 <-predict(mymodel, train, type = "response")
+response2
+
+#test model
+confmatrix <- table(Actual_Value=train$Risk1Yr, Predicted_Value = response2 >0.5)
+confmatrix
+
+#accuracy
+(confmatrix[[1,1]] + confmatrix[[2,2]])/sum(confmatrix)
+```
+
+
+
+### 2a) Fit a logistic regression model to the binary-classifier-data.csv dataset
+
+
+```{r}
+binary.classifier <- read.csv ("data/binary-classifier-data.csv", header = T, stringsAsFactors = T)
+binary_logistic <- glm(label ~ x + y, data = binary.classifier, family = binomial())
+summary(binary_logistic)
+```
+
+
+### 2b) The dataset (found in binary-classifier-data.csv) contains three variables; label, x, and y. The label variable is either 0 or 1 and is the output we want to predict using the x and y variables.
+### b i) What is the accuracy of the logistic regression classifier?
+
+```{r}
+library(caTools)
+
+#split the data
+split <- sample.split(binary.classifier, SplitRatio = 0.8)
+split
+
+# Train model
+train <- subset(binary.classifier, split == "TRUE")
+test <- subset(binary.classifier, split == "FALSE")
+mymodel <- glm(label ~ x + y, data = train, family = binomial())
+summary(mymodel)
+
+# Run test data through the model built on training data
+response <- predict(mymodel, test, type = "response")
+response
+response2 <-predict(mymodel, train, type = "response")
+response2
+
+#Test model
+confmatrix <- table(Actual_Value=train$label, Predicted_Value = response2 >0.5)
+confmatrix
+
+#Accuracy
+(confmatrix[[1,1]] + confmatrix[[2,2]])/sum(confmatrix)
+```
