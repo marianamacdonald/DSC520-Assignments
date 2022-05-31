@@ -1,0 +1,229 @@
+---
+title: "weeks 11 and 12"
+output: pdf_document
+date: '2022-06-04'
+---
+
+## PART 1 - K-Nearest Neighbor
+
+
+## Plot the data from each dataset using a scatter plot.
+
+```{r}
+setwd("/Users/marianamacdonald/Documents/DATA SCIENCE/DSC 520/Statistics R/Week 2/dsc520")
+BinaryClassifier <- read.csv("data/binary-classifier-data.csv", stringsAsFactors = FALSE)
+TrinaryClassifier <- read.csv("data/trinary-classifier-data.csv", stringsAsFactors = FALSE)
+library(ggplot2)
+theme_set(theme_minimal())
+ggplot(BinaryClassifier, aes(x=x, y=y)) +  geom_point(aes(color=label)) + ggtitle("Binary Classified")
+```
+
+```{r}
+ggplot(TrinaryClassifier, aes(x=x, y=y)) +  geom_point(aes(color=label)) + ggtitle("Trinary Classified")
+```
+
+
+
+## Fit a k nearest neighbors’ model for each dataset for k=3, k=5, k=10, k=15, k=20, and k=25. Compute the accuracy of the resulting models for each value of k. 
+
+```{r}
+library(caret)
+library(class)
+
+
+#BINARY CLASSIFIER
+
+TrainingIndex=createDataPartition(BinaryClassifier$label, p=0.8)$Resample1
+TrainingBinary=BinaryClassifier[TrainingIndex,] 
+TestBinary=BinaryClassifier[-TrainingIndex,]
+
+kMatrix = c(3, 5, 10, 15, 20, 25)
+accBin <- c()
+index = 0
+for (i in kMatrix) { 
+        index = index + 1
+        kModBin <-  knn(train=TrainingBinary, test=TestBinary, cl=TrainingBinary$label, k=i )
+        accBin[index] <- 100 * sum(TestBinary$label == kModBin)/NROW(TestBinary$label)
+}
+
+accuracy_df_binary <- as.data.frame(accBin)
+accuracy_df_binary
+
+```
+
+```{r}
+
+#TRINARY CLASSIFIER
+
+TrainingIndex=createDataPartition(TrinaryClassifier$label, p=0.8)$Resample1
+TrainingTrinary=TrinaryClassifier[TrainingIndex,] 
+TestTrinary=TrinaryClassifier[-TrainingIndex,]
+
+kMatrix = c(3, 5, 10, 15, 20, 25)
+accBin <- c()
+index = 0
+for (i in kMatrix) { 
+        index = index + 1
+        kModBin <-  knn(train=TrainingTrinary, test=TestTrinary, cl=TrainingTrinary$label, k=i )
+        accBin[index] <- 100 * sum(TestTrinary$label == kModBin)/NROW(TestTrinary$label)
+}
+
+accuracy_df_trinary <- as.data.frame(accBin)
+accuracy_df_trinary
+```
+
+## Plot the results in a graph where the x-axis is the different values of k and the y-axis is the accuracy of the model.
+
+
+```{r}
+
+
+library(ggplot2)
+ggplot() + 
+geom_point(data=accuracy_df_binary, aes(x=kMatrix, y=accBin), color='green') + 
+geom_point(data=accuracy_df_trinary, aes(x=kMatrix, y=accBin), color='red')
+```
+
+
+## Looking back at the plots of the data, do you think a linear classifier would work well on these datasets?
+
+I don't think so because the plots show the clusters all over the place and not on a straight line.
+
+## How does the accuracy of your logistic regression classifier from last week compare?  Why is the accuracy different between these two methods?
+
+For the binary data set, last week's accuracy was about 58%. This week it is about 97%.
+
+The accuracy is different because according to "Towards Data Science", KNN is a non-parametric model (do not often conform to a normal distribution, as they rely upon continuous data, rather than discrete values), where LR is a parametric model (finite number of parameters).
+KNN supports non-linear solutions where LR supports only linear solutions.
+
+_____________
+
+
+## PART 2 - Clustering 
+
+## Plot the dataset using a scatter plot.
+
+```{r}
+setwd("/Users/marianamacdonald/Documents/DATA SCIENCE/DSC 520/Statistics R/Week 2/dsc520")
+clustering_data <- read.csv("data/clustering-data.csv", stringsAsFactors = FALSE)
+library(ggplot2)
+theme_set(theme_minimal())
+ggplot(clustering_data, aes(x=x, y=y)) +  geom_point() + ggtitle("Clustering data")
+```
+
+
+
+## Fit the dataset using the k-means algorithm from k=2 to k=12. Create a scatter plot of the resultant clusters for each value of k.
+
+```{r}
+dataK2<- kmeans(x=clustering_data, centers=2)
+dataK2$size
+```
+
+```{r}
+library(factoextra)
+set.seed(123)
+dataK2N25 <- kmeans(clustering_data, centers=2, nstart=25)
+fviz_cluster(dataK2N25, data = clustering_data)
+```
+
+```{r}
+library(factoextra)
+set.seed(123)
+dataK3N25 <- kmeans(clustering_data, centers=3, nstart=25)
+fviz_cluster(dataK3N25, data = clustering_data)
+```
+
+
+```{r}
+set.seed(123)
+dataK4N25 <- kmeans(clustering_data, centers=4, nstart=25)
+fviz_cluster(dataK4N25, data = clustering_data)
+```
+
+
+```{r}
+set.seed(123)
+dataK5N25 <- kmeans(clustering_data, centers=5, nstart=25)
+fviz_cluster(dataK5N25, data = clustering_data)
+```
+
+```{r}
+set.seed(123)
+dataK6N25 <- kmeans(clustering_data, centers=6, nstart=25)
+fviz_cluster(dataK6N25, data = clustering_data)
+```
+
+
+```{r}
+set.seed(123)
+dataK7N25 <- kmeans(clustering_data, centers=7, nstart=25)
+fviz_cluster(dataK7N25, data = clustering_data)
+```
+
+```{r}
+set.seed(123)
+dataK8N25 <- kmeans(clustering_data, centers=8, nstart=25)
+fviz_cluster(dataK8N25, data = clustering_data)
+```
+
+```{r}
+set.seed(123)
+dataK9N25 <- kmeans(clustering_data, centers=9, nstart=25)
+fviz_cluster(dataK9N25, data = clustering_data)
+```
+
+```{r}
+set.seed(123)
+dataK10N25 <- kmeans(clustering_data, centers=10, nstart=25)
+fviz_cluster(dataK10N25, data = clustering_data)
+```
+
+```{r}
+set.seed(123)
+dataK11N25 <- kmeans(clustering_data, centers=11, nstart=25)
+fviz_cluster(dataK11N25, data = clustering_data)
+```
+
+```{r}
+set.seed(123)
+dataK12N25 <- kmeans(clustering_data, centers=12, nstart=25)
+fviz_cluster(dataK12N25, data = clustering_data)
+```
+
+
+
+
+
+## Use the average distance from the center of each cluster as a measure of how well the model fits the data. To calculate this metric, simply compute the distance of each data point to the center of the cluster it is assigned to and take the average value of all of those distances.
+
+
+
+```{r}
+library(useful)
+dataBest<- FitKMeans(clustering_data, max.clusters=40, nstart=25, seed=123)
+dataBest
+```
+
+
+
+## Calculate this average distance from the center of each cluster for each value of k and plot it as a line chart where k is the x-axis and the average distance is the y-axis.
+
+
+```{r}
+set.seed(123)
+k.max <- 12
+data <- clustering_data
+wss <- sapply(2:k.max, 
+              function(k){kmeans(data, k, nstart=50,iter.max = 12 )$tot.withinss})
+wss
+plot(2:k.max, wss,
+     type="b", pch = 19, frame = FALSE, 
+     xlab="Number of clusters K",
+     ylab="Total within-clusters sum of squares")
+
+```
+
+## One way of determining the “right” number of clusters is to look at the graph of k versus average distance and finding the “elbow point”. Looking at the graph you generated in the previous example, what is the elbow point for this dataset?
+
+k = 6
