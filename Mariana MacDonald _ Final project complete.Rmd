@@ -1,0 +1,420 @@
+---
+title: "Final Project"
+author: "Mariana MacDonald"
+date: '2022-06-04'
+output:
+  pdf_document: default
+bibliography: bibliography.bib
+---
+
+
+                              PART 1
+
+## 1)	Identify a topic or a problem that you want to research.  Provide an introduction that explains the problem statement or topic you are addressing. Why would someone be interested in this?  How is it a data science problem?
+
+Mental health influences on an adult’s career. 
+
+I believe that, based on a brief research, majority of population with depression are women. I assume that this adds to the fact that women are not treated the same way as men are in most of the companies. Businesses are affected by untreated depressed people. Depression and other mental disorders are very subjective and hard to identify. People often say they are sad, depressed but not necessarily have a mental health issue.  Data can help improve the treatment, the trial and error for medication identifying a pattern, the early detection of the symptoms, which can reduce the impact for that person. Companies should consider depression as a condition and maybe even, consider as part of an inclusion program. Knowing how to assist, companies can provide the support, the access to health insurance and benefit from great employees that just need some treatment.
+
+
+## 2)	Draft 5-10 Research questions that focus on the problem statement/topic.
+
+-	What gender tend to be more depressive?
+-	Which age group has more depression?
+-	What is their marital status?
+- What is the work situation? employed? unemployed?
+-	How many % in the world suffer from depression
+-	What are mental health disorder types?
+
+
+
+## 3)	Provide a concise explanation of how you plan to address this problem statement.
+
+My plan is to research for data that can prove my predictions that majority of the population with depression are middle age women, who make less money than men (depending on them) and suffer with their career path.
+
+
+## 4)	Discuss how your proposed approach will address (fully or partially) this problem.
+
+I am sure there are lots of studies out there with the same purpose, but my idea is to help women with depression to grow in companies. Provide awareness to the companies that there is discrimination and they should include these employees like any other disorder/disease and not discriminate.
+
+I will analyze different data sources in hope of an useful outcome. 
+
+
+## 5)	Do some digging and find at least 3 datasets that you can use to address the issue. (There is not a required number of fields or rows for these datasets)
+-	Original source where the data was obtained is cited and, if possible, hyperlinked.
+-	Source data is thoroughly explained (i.e. what was the original purpose of the data, when was it collected, how many variables did the original have, explain any peculiarities of the source data such as how missing values are recorded, or how data was imputed, etc.).
+
+DATA 1: https://data.world/vizzup/mental-health-depression-disorder-data    [@disorderdata1]                                             
+DATA 2: https://www.kaggle.com/datasets/nilimajauhari/glassdoor-analyze-gender-pay-gap  [@genderpaygap2]                               
+DATA 3: https://www.kaggle.com/datasets/arashnic/the-depression-dataset [@depressiondataset3]
+
+
+## 6)	Identify the packages that are needed for your project.
+
+I may need more or less packages than described here, it will depend on my future analysis, but for now, I believe I will need: ggplot2, readxl, plyr, Dplyr, magrittr, lm.beta, carData, Hmisc
+
+## 7)	What types of plots and tables will help you to illustrate the ﬁndings to your research questions?
+
+Comparison of gender wage gap
+Comparison of gender with depression
+Histograms
+
+
+## 8)	What do you not know how to do right now that you need to learn to answer your research questions?
+
+Logistic regression and machine learning.
+
+
+PART 2
+
+
+---
+title: "Final Project"
+author: "Mariana MacDonald"
+date: '2022-05-22'
+output:
+  pdf_document: default
+bibliography: bibliography.bib
+---
+
+## Data importing and cleaning steps are explained in the text and follow a logical process. Outline your data preparation and cleansing steps.
+
+- familiarized with the data sets;
+- checked for NAs, errors or missing values;
+- changed the names of the variables when needed to make it standard and easier to read and use;
+- extracted only relevant variables from the data sets for my research;
+- most of the data I am using, is already clean
+
+
+
+## With a clean dataset, show what the final data set looks like. However, do not print off a data frame with 200+ rows; show me the data in the most condensed form possible.
+
+DATA1 - Mental health Depression disorder Data 
+
+```{r}
+setwd("/Users/marianamacdonald/Documents/DATA SCIENCE/DSC 520/Statistics R/Week 2/dsc520")
+library(readxl)
+library(dplyr)
+DATA1 <- read_excel("DATA 1 - Final Project - Mental health Depression disorder Data.xlsx")
+library(tidyverse)
+library(magrittr)
+library(tidyr)
+library(purrr)
+names(DATA1)
+
+colnames(DATA1) <- c("entity", "code", "year", "schizophrenia", "bipolar_disorder",
+                     "eating_disorders","anxiety_disorders", "drug_use_disorders", "depression",
+                     "alcohol_use_disorders")
+
+newdata1 <- subset(DATA1, code == "USA", select=c(code, year, depression))
+head(newdata1)
+```
+
+```{r}
+newdata2<- subset(DATA1, select=c(code, depression))
+head(newdata2)
+```
+
+
+
+
+
+DATA 2 - Glassdoor Gender Pay Gap
+
+
+```{r}
+setwd("/Users/marianamacdonald/Documents/DATA SCIENCE/DSC 520/Statistics R/Week 2/dsc520")
+DATA2 <- read.csv("DATA 2 - Final Project - Glassdoor Gender Pay Gap.csv", header = T,
+                  stringsAsFactors = T)
+names(DATA2)
+head(DATA2)
+```
+
+
+
+DATA 3 - The Depression Dataset -
+
+From this data, I intend to use only a few variables, I have removed the melanch and inpatient, which had NA values and I am not interested on them. Also, from the entire dataset, I am only able to use  a few rows. The others are missing basically all the information. Conditions 7,8,9 have been removed.
+
+```{r}
+library(tidyr)
+ 
+setwd("/Users/marianamacdonald/Documents/DATA SCIENCE/DSC 520/Statistics R/Week 2/dsc520")
+DATA3 <- read.csv("DATA 3 - Final Project - scores.csv", header = T)
+names(DATA3)
+
+newdata3 <- DATA3 %>% drop_na(afftype, melanch)
+newdata3
+```
+
+Description of variables
+number (patient identifier), days (number of days of measurements), gender (1 or 2 for female or male), age (age in age groups), afftype (1: bipolar II, 2: unipolar depressive, 3: bipolar I), melanch (1: melancholia, 2: no melancholia), inpatient (1: inpatient, 2: outpatient), edu (education grouped in years), marriage (1: married or cohabiting, 2: single), work (1: working or studying, 2: unemployed/sick leave/pension), madrs1 (MADRS score when measurement started), madrs2 (MADRS when measurement stopped).
+
+
+
+
+
+## What do you not know how to do right now that you need to learn to import and cleanup your dataset?
+
+I have learned how to import csv, excel and arff dataset so I believe I have learned what I need for this project. What is pending is machine learning.
+
+
+## Discuss how you plan to uncover new information in the data that is not self-evident.
+
+At this moment, I am not sure if the predictors I am selecting will have relationship to the questions I want to answer, so I might need to use other variables to get to my solution. I might use correlation, regression, ANOVA, histograms and/or graphs to uncover new information.
+
+## What are different ways you could look at this data to answer the questions you want to answer?
+
+DATA1
+Instead of only considering depression, I can sum the % of all the mental disorders and create a new variable (called Sum)
+
+```{r}
+library(readxl)
+getwd()
+disorders_df <- read_excel("DATA 1 - Final Project - Mental health Depression disorder Data.xlsx")
+head(disorders_df)
+colnames(disorders_df)
+```
+```{r}
+disorders_df$Sum <- rowSums(disorders_df[c('Schizophrenia (%)', 'Bipolar disorder (%)',
+'Eating disorders (%)', 'Anxiety disorders (%)',
+'Drug use disorders (%)', 'Depression (%)',
+'Alcohol use disorders (%)')], na.rm = TRUE)
+head(disorders_df)
+```
+
+
+DATA 2
+I can separate the data into male and female base pay, and look at the summary to find the mean and compare. (Male USD 98,458 x Female USD 89,943)
+
+```{r}
+malepay <- subset(DATA2, Gender == "Male", select=c(Gender, BasePay))
+head(malepay)
+summary(malepay)
+
+femalepay <- subset(DATA2, Gender == "Female", select=c(Gender, BasePay))
+head(femalepay)
+summary(femalepay)
+```
+
+
+
+## Do you plan to slice and dice the data in different ways, create new variables, or join separate data frames to create new summary information? Explain.
+
+I will not be joining data frames. They are very different and I won't benefit from joining them. I might create new variables.
+
+## How could you summarize your data to answer key questions?
+
+```{r}
+summary(newdata1)
+```
+
+
+```{r}
+summary(newdata2)
+```
+
+
+```{r}
+summary(DATA2)
+```
+
+```{r}
+summary(newdata3)
+```
+
+
+
+## What types of plots and tables will help you to illustrate the findings to your questions? Ensure that all graph plots have axis titles, legend if necessary, scales are appropriate, appropriate geoms used, etc.).
+
+
+DATA 1
+
+Depression in the USA during the years
+
+```{r}
+library(ggplot2)
+theme_set(theme_minimal())
+ggplot(newdata1, aes(x=year, y=depression)) + geom_point() + 
+  ggtitle("Depression in the USA")+xlab("Country)") + ylab("Depression %)")
+```
+
+Table of USA, Year and Depression %
+
+```{r table, echo=FALSE, results='asis'}
+library(pander)
+pandoc.table(newdata1)
+```
+
+
+DATA 2
+
+gap pay between male and female
+
+```{r}
+qplot(Gender, BasePay, geom = "boxplot", data = DATA2, na.rm=TRUE, fill=Gender)
+```
+
+Education x gender
+
+```{r}
+library(dplyr)
+DATA2 %>% group_by(Gender, Education) %>% summarize(count = n())
+```
+
+```{r}
+library(dplyr)
+new_glassdoor_df <- DATA2 %>% group_by(Gender, Education) %>% summarize(count = n())
+
+library(ggplot2)
+ggplot(new_glassdoor_df, aes(Education, count, fill = Gender)) +
+geom_bar(stat="identity", position = 'dodge') +
+labs(title="Multiple Bar plots")
+```
+
+DATA 3 
+
+Depression by gender 
+
+Regrettably, this is not a very good data to analyze this correlation. Based on many studies that I will discuss at the next step, about twice as many women as men experience depression [@Mayo]
+
+
+"The prevalence of major depression is higher in women than in men;6,7 in 2010 its global annual prevalence was 5.5% and 3.2%, respectively, representing a 1.7-fold greater incidence in women." [@ncbi]
+
+
+```{r}
+
+library(ggplot2)
+
+newdata3[newdata3$gender==1, 'gender'] <- "female"
+newdata3[newdata3$gender==2, 'gender'] <- "male"
+
+newdata3[newdata3$afftype==1, 'afftype'] <- "bipolar II"
+newdata3[newdata3$afftype==2, 'afftype'] <- "depression"
+newdata3[newdata3$afftype==3, 'afftype'] <- "bipolar I"
+
+ggplot(newdata3, 
+       aes(x = gender, 
+           fill = afftype)) + 
+  geom_bar(position = position_dodge(preserve = "single"))
+```
+
+Marriage x Depression
+
+```{r}
+
+library(ggplot2)
+
+newdata3[newdata3$marriage==1, 'marriage'] <- "married"
+newdata3[newdata3$marriage==2, 'marriage'] <- "single"
+
+newdata3[newdata3$afftype==1, 'afftype'] <- "bipolar II"
+newdata3[newdata3$afftype==2, 'afftype'] <- "depression"
+newdata3[newdata3$afftype==3, 'afftype'] <- "bipolar I"
+
+ggplot(newdata3, 
+       aes(x = marriage, 
+           fill = afftype)) + 
+  geom_bar(position = position_dodge(preserve = "single"))
+```
+Work x Depression
+
+```{r}
+
+library(ggplot2)
+
+newdata3[newdata3$work==1, 'work'] <- "working or studying"
+newdata3[newdata3$work==2, 'work'] <- "unemployed/sick leave/pension"
+
+newdata3[newdata3$afftype==1, 'afftype'] <- "bipolar II"
+newdata3[newdata3$afftype==2, 'afftype'] <- "depression"
+newdata3[newdata3$afftype==3, 'afftype'] <- "bipolar I"
+
+ggplot(newdata3, 
+       aes(x = work, 
+           fill = afftype)) + 
+  geom_bar(position = position_dodge(preserve = "single"))
+```
+
+## What do you not know how to do right now that you need to learn to answer your questions?
+
+Machine learning.
+
+
+## Do you plan on incorporating any machine learning techniques to answer your research questions? Explain.
+
+I might. I will have to wait until next week to see if it's applicable. I am interested in learning and applying Nearest Neighbors Classification, K-Means Clustering
+
+
+## Future Steps
+I won't be adding new data, but I will be adding new research information to discuss about depression and gender. While women are more depressed than men, there are questions that came up, such as, how often are men questioned about depression symptoms, are the symptoms the same? Do men go to primary care or doctor visits in general as often as women? 
+
+
+
+
+
+
+
+
+
+                                                  PART 3
+
+
+
+## Introduction: summarize the problem statement you addressed. 
+
+My project idea was to prove a theory that I have and experience on my own life, that mental disorders influence on an adult’s career. Adding to the fact that women and men have differences at the work environment (from salary to prejudice on what one can or cannot do), I believe mental disorders affect both the employees and companies. 
+
+
+
+## The problem statement you addressed. 
+Mental health influences on an adult’s career. 
+
+
+
+## How you addressed this problem statement
+
+
+My idea was to look for three types of data that would present me with some information to answer my questions. I focused more on depression and gender. That’s how I started searching for my data. 
+Data 1 – On the first sheet, the data brought a lot of information about the whole world, different types of mental disorders, how it changed within the years. I was hopeful to use the other sheets too, with education, age, gender information (but they were not very good/complete data).
+Data 2- this data from Glassdoor was used to present information about gender, pay and education level.
+Data 3- I haven’t noticed the data was very incomplete, but for the first 23 patients, I was able to use some information to compare depression by gender, depression compared to marriage and work/study.
+
+
+
+## Summarize the interesting insights that your analysis provided.
+
+Data 1 - it is possible to see on the first plot that depression has a non-linear regression, with some lows in 1995 and 2010. 
+For the second plot, we clearly see the gap between male and female pay (men getting paid more than women).
+Data 2 - shows us that men has higher education (more male with PhD than women), and that might explain also why they get paid more. 
+Data 3 – it was meant to prove what other studies show that female present more mental disorders (specifically depression) than male. The data showed that it was 50/50 for depression and higher counts for bipolar for men. As already mentioned, that’s not necessarily correct and the data might have been bad for the case, because it was missing lots of information.
+
+For the marriage graph, we can see that married are more depressed than single, however, single suffer more with bipolar disorders. Lastly, the data shows that working/studying adults are way less depressed (or suffering from mental disorders) than unemployed people. Since this, counts for sick/leave, that might be the reason why the high difference in numbers. Also, employed people are busy, feeling useful, feeling important, making money, with less time to think about some problems.
+
+
+
+## Summarize the implications to the consumer (target audience) of your analysis. 
+
+I believe the companies are not ready for this type of discussion. Some companies try to discuss mindfulness and offer some meditation courses, but that’s not enough. The same way there are discussions about different races, genders, cultures, there is a need to discuss about depression and how to look for help. It is still a difficult subject but I think companies could lose less money if they would help the employees with less judgement.  
+"According to a 2018 study by the American Heart Association, companies lose $17,241 per year in incremental healthcare and productivity costs for each person with major depressive disorder." @forbes
+
+## Discuss the limitations of your analysis and how you, or someone else, could improve or build on it.
+
+I haven’t found good data to work with. I am sure there is a ton of data available that could have been more helpful, more useful, that could have proved me something else. This subject has been researched a lot and is always in constant evaluation. 
+
+
+
+## Concluding Remarks
+
+I believe that companies can improve the way they treat employees with mental disorders. I believe the discrepancy or gap with gender and pay is affected by mental disorders. The fact that women are more depressed than men, can be related to gender or not. Women usually seek preventive care and treatments more often than men ("In 2012, 61.4 preventive care visits were made to office-based physicians per 100 persons. The female rate (76.6 visits per 100 females) exceeded the male rate (45.4 visits per 100 males) by 69%.") @CDC
+
+ Women and men have different symptoms for depression. While women can be more sensitive, crying, feeling hopeless, quieter, men can be aggressive, show more anger or engage in substance abuse.  Women are not paid less only because of this, but, I am sure it affects the career because the person feels less confident, has to be absent for treatment, trying medications, it can cause the person to be more sensitive to changes, it affects more the personal life than others, bringing some prejudice from management. I believe that if mental disorder can be treated as special needs, the companies would benefit from it as well as the employees. Depression cannot be proved with a blood test, so the judgement from others is very hard.
+This article is really interesting: @article https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5734543/
+
+
+
+
+# References
+
+
+
